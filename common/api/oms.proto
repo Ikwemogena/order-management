@@ -1,0 +1,43 @@
+syntax= "proto3";
+
+option go_package = "github.com/ikwemogena/order-management-common/api";
+
+package api;
+
+
+message Order {
+    string ID = 1;
+    string CustomerID = 2;
+    repeated Items Items = 3;
+    string Status = 4;
+}
+
+service OrderService {
+    rpc CreateOrder(CreateOrderRequest) returns (Order);
+}
+
+message Item {
+    string ID = 1;
+    string Name = 2;
+    int32 Quantity = 2;
+    string PriceID = 3;
+}
+
+message ItemsWithQuantity {
+    string ID = 1;
+    int32 Quantity = 2;
+}
+
+message CreateOrderRequest {
+    string CustomerID = 2;
+    repeated ItemsWithQuantity Items = 3;
+}
+
+// message CreateOrderRequest {
+//     string order_id = 1;
+//     string customer_id = 2;
+//     repeated ItemsWithQuantity Items = 3;
+//     repeated OrderItem items = 3;
+//     string product_id = 3;
+//     int32 quantity = 4;
+// }
