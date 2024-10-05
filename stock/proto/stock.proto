@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package stock;
+
+option go_package = "order-management/stock/proto";
+
+message CheckStockRequest {
+  string item_id = 1;
+  int32 quantity = 2;
+}
+
+message CheckStockResponse {
+  bool available = 1;
+  int32 available_quantity = 2;
+}
+
+message UpdateStockRequest {
+  string item_id = 1;
+  int32 quantity_change = 2;
+}
+
+message UpdateStockResponse {
+  bool success = 1;
+  int32 new_quantity = 2;
+}
+
+service StockService {
+  rpc CheckStock (CheckStockRequest) returns (CheckStockResponse);
+  rpc UpdateStock (UpdateStockRequest) returns (UpdateStockResponse);
+}
