@@ -6,10 +6,31 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ikwemogena/order-management-gateway/config"
+	pb "github.com/ikwemogena/order-management/common/api"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+)
+
+var (
+	orderServiceAddr = "localhost:3000"
 )
 
 func main() {
     fmt.Println("hello morgz")
+
+	conn, err := grpc.NewClient(orderServiceAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+
+	if err != nil {
+		log.Fatalf("Failed to dial server: %v", err)
+	}
+
+	defer conn.Close()
+
+	log.Println("Successfully connected to order service", orderServiceAddr)
+
+	c := pb.NewOrderServiceClient(conn)
+
+	log.Println("Successfully created client", c)
 
 	cfg, err := config.Load()
 	if err != nil {
@@ -20,7 +41,7 @@ func main() {
 
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"message": "Order Gateway bro!",
+			"message": "OMS Gateway!",
 		})
 	})
 	
