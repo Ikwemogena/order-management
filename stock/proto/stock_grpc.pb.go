@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -21,6 +22,8 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	StockService_CheckStock_FullMethodName  = "/stock.StockService/CheckStock"
 	StockService_UpdateStock_FullMethodName = "/stock.StockService/UpdateStock"
+	StockService_CreateStock_FullMethodName = "/stock.StockService/CreateStock"
+	StockService_GetStock_FullMethodName    = "/stock.StockService/GetStock"
 )
 
 // StockServiceClient is the client API for StockService service.
@@ -29,6 +32,8 @@ const (
 type StockServiceClient interface {
 	CheckStock(ctx context.Context, in *CheckStockRequest, opts ...grpc.CallOption) (*CheckStockResponse, error)
 	UpdateStock(ctx context.Context, in *UpdateStockRequest, opts ...grpc.CallOption) (*UpdateStockResponse, error)
+	CreateStock(ctx context.Context, in *CreateStockRequest, opts ...grpc.CallOption) (*CreateStockResponse, error)
+	GetStock(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (grpc.ServerStreamingClient[GetStockResponse], error)
 }
 
 type stockServiceClient struct {
@@ -59,12 +64,43 @@ func (c *stockServiceClient) UpdateStock(ctx context.Context, in *UpdateStockReq
 	return out, nil
 }
 
+func (c *stockServiceClient) CreateStock(ctx context.Context, in *CreateStockRequest, opts ...grpc.CallOption) (*CreateStockResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateStockResponse)
+	err := c.cc.Invoke(ctx, StockService_CreateStock_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stockServiceClient) GetStock(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (grpc.ServerStreamingClient[GetStockResponse], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &StockService_ServiceDesc.Streams[0], StockService_GetStock_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[emptypb.Empty, GetStockResponse]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type StockService_GetStockClient = grpc.ServerStreamingClient[GetStockResponse]
+
 // StockServiceServer is the server API for StockService service.
 // All implementations must embed UnimplementedStockServiceServer
 // for forward compatibility.
 type StockServiceServer interface {
 	CheckStock(context.Context, *CheckStockRequest) (*CheckStockResponse, error)
 	UpdateStock(context.Context, *UpdateStockRequest) (*UpdateStockResponse, error)
+	CreateStock(context.Context, *CreateStockRequest) (*CreateStockResponse, error)
+	GetStock(*emptypb.Empty, grpc.ServerStreamingServer[GetStockResponse]) error
 	mustEmbedUnimplementedStockServiceServer()
 }
 
@@ -80,6 +116,12 @@ func (UnimplementedStockServiceServer) CheckStock(context.Context, *CheckStockRe
 }
 func (UnimplementedStockServiceServer) UpdateStock(context.Context, *UpdateStockRequest) (*UpdateStockResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateStock not implemented")
+}
+func (UnimplementedStockServiceServer) CreateStock(context.Context, *CreateStockRequest) (*CreateStockResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateStock not implemented")
+}
+func (UnimplementedStockServiceServer) GetStock(*emptypb.Empty, grpc.ServerStreamingServer[GetStockResponse]) error {
+	return status.Errorf(codes.Unimplemented, "method GetStock not implemented")
 }
 func (UnimplementedStockServiceServer) mustEmbedUnimplementedStockServiceServer() {}
 func (UnimplementedStockServiceServer) testEmbeddedByValue()                      {}
@@ -138,6 +180,35 @@ func _StockService_UpdateStock_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StockService_CreateStock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateStockRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StockServiceServer).CreateStock(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StockService_CreateStock_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StockServiceServer).CreateStock(ctx, req.(*CreateStockRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StockService_GetStock_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(emptypb.Empty)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(StockServiceServer).GetStock(m, &grpc.GenericServerStream[emptypb.Empty, GetStockResponse]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type StockService_GetStockServer = grpc.ServerStreamingServer[GetStockResponse]
+
 // StockService_ServiceDesc is the grpc.ServiceDesc for StockService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -153,7 +224,17 @@ var StockService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "UpdateStock",
 			Handler:    _StockService_UpdateStock_Handler,
 		},
+		{
+			MethodName: "CreateStock",
+			Handler:    _StockService_CreateStock_Handler,
+		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetStock",
+			Handler:       _StockService_GetStock_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "proto/stock.proto",
 }

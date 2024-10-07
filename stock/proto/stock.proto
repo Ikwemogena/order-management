@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package stock;
 
+import "google/protobuf/empty.proto";
+
 option go_package = "order-management/stock/proto";
 
 message CheckStockRequest {
@@ -24,7 +26,26 @@ message UpdateStockResponse {
   int32 new_quantity = 2;
 }
 
+message CreateStockRequest {
+  string item_name = 2;
+  string item_description = 3;
+  int32 quantity = 4;
+}
+
+message CreateStockResponse {
+  bool success = 1;
+}
+
+message GetStockResponse {
+  string item_id = 1;
+  string item_name = 2;
+  string item_description = 3;
+  int32 quantity = 4;
+}
+
 service StockService {
   rpc CheckStock (CheckStockRequest) returns (CheckStockResponse);
   rpc UpdateStock (UpdateStockRequest) returns (UpdateStockResponse);
+  rpc CreateStock (CreateStockRequest) returns (CreateStockResponse);
+  rpc GetStock (google.protobuf.Empty) returns (stream GetStockResponse);
 }
