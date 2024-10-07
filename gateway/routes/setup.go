@@ -9,8 +9,11 @@ func SetupRouter() *gin.Engine {
 
 	r := gin.Default()
 
+	stockHandler := &handler.StockHandler{}
+
 	stock := r.Group("/stock")
-	stock.GET("/:id", handler.CheckStock)
+	stock.POST("/", stockHandler.CreateStock)
+	stock.GET("/:id", stockHandler.CheckStock)
 
 	return r
 }
