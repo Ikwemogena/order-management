@@ -1,4 +1,4 @@
-module github.com/ikwemogena/order-management-gateway
+module github.com/ikwemogena/order-management/gateway
 
 go 1.22.4
 
