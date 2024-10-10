@@ -8,7 +8,7 @@ import (
 	"github.com/ikwemogena/order-management/stock/config"
 	"github.com/ikwemogena/order-management/stock/db"
 	pb "github.com/ikwemogena/order-management/stock/proto"
-	"github.com/ikwemogena/order-management/stock/service"
+	service "github.com/ikwemogena/order-management/stock/services"
 	"google.golang.org/grpc"
 )
 
