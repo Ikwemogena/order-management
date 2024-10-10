@@ -9,6 +9,12 @@ func SetupRouter() *gin.Engine {
 
 	r := gin.Default()
 
+	orderHandler := &handler.OrderHandler{}
+
+	order := r.Group("/order")
+
+	order.POST("/", orderHandler.CreateOrder)
+
 	stockHandler := &handler.StockHandler{}
 
 	stock := r.Group("/stock")
