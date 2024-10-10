@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package order;
+
+option go_package = "github.com/ikwemogena/order-management/orders/proto";
+
+message CreateOrderRequest {
+    string user_id = 1;
+    repeated OrderItem products = 2;
+    double amount = 3;
+    string shipping_address = 4;
+    string payment_method = 5;
+}
+
+message OrderItem {
+    string id = 1;
+    string order_id = 2;
+    string name = 3;
+    int32 quantity = 4;
+    double total_amount = 5;
+    double unit_price = 6;
+}
+
+message CreateOrderResponse {
+    string order_id = 1;
+}
+
+message GetOrderRequest {
+    string order_id = 1;
+}
+
+message GetOrderResponse {
+    string order_id = 1;
+    string user_id = 2;
+    repeated string product_ids = 3;
+    string status = 4;
+} 
+
+service OrderService {
+    rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
+    rpc GetOrder(GetOrderRequest) returns (GetOrderResponse);
+}
