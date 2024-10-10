@@ -17,7 +17,7 @@ import (
 type StockHandler struct{}
 
 func (h *StockHandler) connGrpc() (*grpc.ClientConn, error) {
-	conn, err := grpc.NewClient("localhost:8091",grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient("localhost:8092",grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func (h *StockHandler) CreateStock(c *gin.Context){
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to connect to stock service",
+			"message": "Failed to connect to stock service",
 		})
 		return
 	}
@@ -59,7 +59,7 @@ func (h *StockHandler) CreateStock(c *gin.Context){
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Unable to add item to stock",
+			"message": "Unable to add item to stock",
 		})
 		return
 	}
@@ -72,7 +72,7 @@ func (h *StockHandler) CheckStock(c *gin.Context){
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to connect to stock service",
+			"message": "Failed to connect to stock service",
 		})
 		return
 	}
@@ -89,7 +89,7 @@ func (h *StockHandler) CheckStock(c *gin.Context){
 
 	if itemID == "" {
         c.JSON(http.StatusBadRequest, gin.H{
-            "error": "Item ID is required",
+            "message": "Item ID is required",
         })
         return
     }
@@ -98,7 +98,7 @@ func (h *StockHandler) CheckStock(c *gin.Context){
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Item not found",
+			"message": "Item not found",
 		})
 		return
 	}
