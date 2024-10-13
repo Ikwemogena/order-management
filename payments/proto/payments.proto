@@ -1,0 +1,128 @@
+syntax = "proto3";
+
+option go_package = "github.com/ikwemogena/order-management/payments/proto";
+
+package payments;
+
+message PaymentRequest {
+    string order_id = 1; // The ID of the order being paid for
+    int32 amount = 2;  // Payment amount
+    string payment_method = 3;  // e.g., credit_card, paypal, etc.
+    string currency = 4;  // e.g., USD, EUR, etc.
+}
+
+message PaymentResponse {
+    string status = 1;  // e.g., confirmed, failed
+    string transaction_id = 2;  // Transaction reference ID
+    string message = 3;  // Additional message or error details
+}
+
+message InitializePaymentRequest {
+  string provider = 1;
+  string email = 2;
+  int32 amount = 3;
+  string currency = 4;
+  // string reference = 54;
+}
+
+message InitializePaymentResponse {
+  bool status = 1;
+  string authorization_url = 2;
+  string access_code = 3;
+  string reference = 4;
+  string message = 5;
+}
+
+message VerifyPaymentRequest {
+  string reference = 1;
+}
+
+message VerifyPaymentResponse {
+  bool status = 1;
+  string message = 2;
+  Data data = 3;
+}
+
+message Data {
+  int64 id = 1;
+  string domain = 2;
+  string status = 3;
+  string reference = 4;
+  string receipt_number = 5;
+  int32 amount = 6;
+  string message = 7;
+  string gateway_response = 8;
+  string paid_at = 9;
+  string created_at = 10;
+  string channel = 11;
+  string currency = 12;
+  string ip_address = 13;
+  string metadata = 14;
+  Log log = 15;
+  int32 fees = 16;
+  string fees_split = 17;
+  Authorization authorization = 18;
+  Customer customer = 19;
+  string plan = 20;
+  string split = 21;
+  string order_id = 22;
+  int32 requested_amount = 23;
+  string pos_transaction_data = 24;
+  string source = 25;
+  string fees_breakdown = 26;
+  string connect = 27;
+  string transaction_date = 28;
+  string plan_object = 29;
+  string subaccount = 30;
+}
+
+message Log {
+  int64 start_time = 1;
+  int32 time_spent = 2;
+  int32 attempts = 3;
+  int32 errors = 4;
+  bool success = 5;
+  bool mobile = 6;
+  repeated string input = 7;
+  repeated History history = 8;
+}
+
+message History {
+  string type = 1;
+  string message = 2;
+  int32 time = 3;
+}
+
+message Authorization {
+  string authorization_code = 1;
+  string bin = 2;
+  string last4 = 3;
+  string exp_month = 4;
+  string exp_year = 5;
+  string channel = 6;
+  string card_type = 7;
+  string bank = 8;
+  string country_code = 9;
+  string brand = 10;
+  bool reusable = 11;
+  string signature = 12;
+  string account_name = 13;
+}
+
+message Customer {
+  int64 id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string email = 4;
+  string customer_code = 5;
+  string phone = 6;
+  string metadata = 7;
+  string risk_action = 8;
+  string international_format_phone = 9;
+}
+
+service PaymentService {
+  rpc InitializePayment (InitializePaymentRequest) returns (InitializePaymentResponse);
+  rpc ProcessPayment (PaymentRequest) returns (PaymentResponse);
+  rpc VerifyPayment (VerifyPaymentRequest) returns (VerifyPaymentResponse);
+}
