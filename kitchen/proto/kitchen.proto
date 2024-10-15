@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option go_package = "github.com/ikwemogena/order-management/kitchen/proto";
+
+package kitchen;
+
+message CreateOrderRequest {
+    string id = 1;
+    string user_id = 2;
+    repeated OrderItem products = 3;
+}
+
+message CreateOrderResponse {
+    string status = 1;
+    string message = 2;
+}
+
+message OrderItem {
+    string id = 1;
+    string order_id = 2;
+    string name = 3;
+    int32 quantity = 4;
+}
+
+message UpdateOrderStatusRequest {
+    string order_id = 1;
+    string new_status = 2;
+}
+
+message UpdateOrderStatusResponse {
+    string status = 1;
+    string message = 2;
+}
+
+service KitchenService {
+  rpc RecieveOrder(CreateOrderRequest) returns (CreateOrderResponse);
+  rpc UpdateOrderStatus(UpdateOrderStatusRequest) returns (UpdateOrderStatusResponse);
+}
