@@ -18,7 +18,7 @@ type OrderHandler struct {}
 
 func (order *OrderHandler) connGrpc() (*grpc.ClientConn, error) {
 
-   conn, err := grpc.NewClient("localhost:8091", grpc.WithTransportCredentials(insecure.NewCredentials()))
+   conn, err := grpc.NewClient("orders:8091", grpc.WithTransportCredentials(insecure.NewCredentials()))
 
    if err != nil {
         return nil, err

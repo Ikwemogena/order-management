@@ -16,7 +16,7 @@ import (
 type PaymentHandler struct{}
 
 func (h *PaymentHandler) connGrpc() (*grpc.ClientConn, error) {
-	conn, err := grpc.NewClient("localhost:8094", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient("payments:8094", grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	if err != nil {
 		return nil, err
