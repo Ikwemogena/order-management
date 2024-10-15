@@ -1,0 +1,57 @@
+services:
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    env_file: 
+      - .env
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    depends_on:
+      - orders
+      - payments
+      - stock
+      # - kitchen
+
+  orders:
+    build: ./orders
+    container_name: orders
+    env_file: 
+      - .env
+    ports:
+      - "8081:8081"
+    networks:
+      - app-network
+
+  payments:
+    build: ./payments
+    container_name: payments
+    env_file: 
+      - .env
+    ports:
+      - "8082:8082"
+    networks:
+      - app-network
+
+  stock:
+    build: ./stock
+    container_name: stock
+    env_file: 
+      - .env
+    ports:
+      - "8083:8083"
+    networks:
+      - app-network
+
+  # kitchen:
+  #   build: ./kitchen
+  #   container_name: kitchen
+  #   ports:
+  #     - "8084:8084"
+  #   networks:
+  #     - app-network
+
+networks:
+  app-network:
+    driver: bridge
