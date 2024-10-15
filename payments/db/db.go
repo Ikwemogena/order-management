@@ -30,16 +30,16 @@ func (db *Database) InitTables() error {
        CREATE TABLE IF NOT EXISTS payments (
             id UUID PRIMARY KEY,
             order_id UUID NOT NULL,
-            reference string UNIQUE NOT NULL,
+            reference VARCHAR(255) UNIQUE NOT NULL,
             amount DECIMAL(10, 2) NOT NULL,
             currency VARCHAR(10) DEFAULT 'NGN',
             status VARCHAR(50) NOT NULL,
             payment_provider TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     `)
     if err != nil {
-        return fmt.Errorf("failed to create payemnts table: %v", err)
+        return fmt.Errorf("failed to create payments table: %v", err)
     }
     return nil
 }
